@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+<script>
+// This is a crappy JS redirect booter for the Services Meetings. It takes
+// a parameter in the link because the day moves in the week.
+// In a less evil world, the base URL could be passed as well, but then
+// this page becomes an open proxy and that's bad.
+
+var baseURL="https://wiki.mozilla.org/Services/Meetings/"
+
+function params(urlstr) {
+    // parse the params from the URL.
+    var params = [];
+    var url = new URL(urlstr);
+    args=url.search.slice(1).split('&');
+    for (var i=0; i < args.length; i++) {
+        kv = args[i].split("=");
+        params[kv[0]] = kv[1];
+    }
+    return params;
+}
+
+function zpad(num, pad) {
+    var plen = ("" + num).length;
+    if (plen < pad) {
+        return Array(1+pad-plen).join("0") + num;
+    }
+    return "" + num;
+}
+
+function handleRedir() {
+    var today = new Date();
+    var day = today.getDay();
+    var adjust = 0;
+    // get the day param
+    var args = params(document.URL);
+    if (! args['day']) {
+        // return to sender
+        history.go(-1);
+        return
+    }
+    var meeting = parseInt(args["day"], 10);
+    if (isNaN(meeting)) {
+        history.go(-1);
+        return
+    }
+
+    if (meeting != day) {
+        var adjust;
+        if (day < meeting) {
+            adjust = meeting - day;
+        }
+        if (day > meeting) {
+            adjust = (meeting - day) + 7;
+        }
+    }
+    var redirDate = new Date(today.getUTCFullYear(),
+        today.getUTCMonth()+1,
+        today.getUTCDate() + adjust);
+    var redir = redirDate.getUTCFullYear() + "-" +
+            zpad(redirDate.getUTCMonth(),2) + "-" +
+            zpad(redirDate.getUTCDate(),2);
+    document.location = baseURL + redir
+}
+
+window.addEventListener("load", handleRedir)
+</script>
+<noscript>
+<style>
+    * {font-family: Arial;}
+</style>
+<h1>No redirect for YOU!</h1>
+<h2>Mister, Javascript-isn't-good-enough-for-me</h2>
+<h3>(or Ms. no need to be exclusive or anything)</h3>
+<p class="fade">All this page does is boot you to the next meeting. Granted, that
+kinda needs to know what today is, and that means figuring things out
+and that means running a script, and I worked really hard at this and
+now you don't care and mother always told me to stay away from people
+like you and now look where that's gotten me and oh great the cat is
+crying and you don't bring me flowers anymore and... </p>
+</noscript>
+</body>
+</html>
