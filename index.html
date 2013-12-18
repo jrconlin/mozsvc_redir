@@ -64,12 +64,13 @@ function handleRedir() {
         }
     }
     var redirDate = new Date(today.getUTCFullYear(),
-        today.getUTCMonth()+1,
+        today.getUTCMonth(),
         today.getUTCDate() + adjust);
     var redir = redirDate.getUTCFullYear() + "-" +
-            zpad(redirDate.getUTCMonth(),2) + "-" +
+            zpad(redirDate.getUTCMonth()+1,2) + "-" +
             zpad(redirDate.getUTCDate(),2);
-    document.location = baseURL + redir
+    console.debug(baseURL+redir);
+    document.location = baseURL + redir;
 }
 
 window.addEventListener("load", handleRedir)
@@ -78,6 +79,7 @@ window.addEventListener("load", handleRedir)
 <style>
     * {font-family: Arial;}
 </style>
+<div id="disp"></div>
 <h1>No redirect for YOU!</h1>
 <h2>Mister, Javascript-isn't-good-enough-for-me</h2>
 <h3>(or Ms. no need to be exclusive or anything)</h3>
